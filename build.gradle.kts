@@ -1,5 +1,5 @@
 plugins {
-    id("maven")
+    maven
     kotlin("multiplatform") version "1.4.10"
 }
 
