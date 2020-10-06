@@ -1,5 +1,7 @@
 package `fun`.sketchcode.api.lib
 
+import kotlinx.serialization.Serializable
+
 data class AuthorizeResponseModel(
     val generatedTime: Long,
     val hex: String,
@@ -58,3 +60,21 @@ data class CreatePostBodyModel(
     val replyToPostHex: String?,
     val text: String?
 )
+
+@Serializable
+data class ServerErrorModel (
+        val code: Int,
+        val message: String
+)
+
+data class ResponseScope<T>(
+        val body: T?,
+        val errorBody: ServerErrorModel?
+) {
+    fun success (lambda: (body: T) -> Unit) = apply {
+        if(body != null) lambda(body)
+    }
+    fun error (lambda: ServerErrorModel.() -> Unit) = apply {
+        if(errorBody != null) lambda(errorBody)
+    }
+}
