@@ -28,6 +28,7 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-common:1.3.72")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.7")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.20.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
             }
         }
         val jvmMain by getting {

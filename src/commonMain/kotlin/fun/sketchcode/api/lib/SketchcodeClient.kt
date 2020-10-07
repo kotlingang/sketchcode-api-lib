@@ -5,9 +5,7 @@ import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import kotlinx.serialization.UnstableDefault
 
 class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api") {
 
@@ -24,11 +22,11 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param recaptchaToken - Recaptcha verification token
      */
     suspend fun getAuthCode(email: String, recaptchaToken: String) =
-        client.request<Unit>(method = HttpMethod.Get) {
-            url("$baseUrl/users/tokens/code")
-            contentType(ContentType.Application.Json)
-            body = AuthorizeParamsModel(email, recaptchaToken)
-        }
+            client.request<Unit>(method = HttpMethod.Get) {
+                url("$baseUrl/users/tokens/code")
+                contentType(ContentType.Application.Json)
+                body = AuthorizeParamsModel(email, recaptchaToken)
+            }
 
     /**
      * Verify authorization code.
@@ -37,22 +35,22 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @return Authorization token
      */
     suspend fun sendAuthCode(code: Int, email: String) =
-        client.request<AuthorizeParamsModel>(method = HttpMethod.Post) {
-            url("$baseUrl/users/tokens")
-            contentType(ContentType.Application.Json)
-            body = SendCodeParamsModel(email, code)
-        }
+            client.request<AuthorizeParamsModel>(method = HttpMethod.Post) {
+                url("$baseUrl/users/tokens")
+                contentType(ContentType.Application.Json)
+                body = SendCodeParamsModel(email, code)
+            }
 
     /**
      * Get info about token.
      * @param tokenHex - token in hex
      */
     suspend fun getToken(tokenHex: String) =
-        client.request<AuthorizeResponseModel>(method = HttpMethod.Get) {
-            url("$baseUrl/users/tokens")
-            contentType(ContentType.Application.Json)
-            header("tokenHex", tokenHex)
-        }
+            client.request<AuthorizeResponseModel>(method = HttpMethod.Get) {
+                url("$baseUrl/users/tokens")
+                contentType(ContentType.Application.Json)
+                header("tokenHex", tokenHex)
+            }
 
     /**
      * Get user by [userId].
@@ -60,11 +58,11 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param userId - User id
      */
     suspend fun getUser(tokenHex: String, userId: Long) =
-        client.request<UserModel> (method = HttpMethod.Get) {
-            url("$baseUrl/users/$userId")
-            contentType(ContentType.Application.Json)
-            header("tokenHex", tokenHex)
-        }
+            client.request<UserModel>(method = HttpMethod.Get) {
+                url("$baseUrl/users/$userId")
+                contentType(ContentType.Application.Json)
+                header("tokenHex", tokenHex)
+            }
 
     /**
      * Get list of users.
@@ -73,9 +71,9 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param searchQuery - Search string query
      */
     suspend fun getUsers(
-        n: Int,
-        offset: Long?,
-        searchQuery: String?
+            n: Int,
+            offset: Long?,
+            searchQuery: String?
     ) = client.request<List<UserModel>>(method = HttpMethod.Get) {
         url("$baseUrl/users")
         contentType(ContentType.Application.Json)
@@ -92,11 +90,11 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param tokenHex - user authorization hex
      */
     suspend fun editUser(
-        avatar: String,
-        bio: String,
-        shortname: String,
-        userName: String,
-        tokenHex: String
+            avatar: String,
+            bio: String,
+            shortname: String,
+            userName: String,
+            tokenHex: String
     ) = client.request<Unit>(method = HttpMethod.Patch) {
         url("$baseUrl/users")
         contentType(ContentType.Application.Json)
@@ -112,10 +110,10 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param text - post content text (max length - 15895).
      */
     suspend fun createPost(
-        attachmentHexes: List<String>? = null,
-        replyToPostHex: String? = null,
-        text: String? = null,
-        tokenHex: String
+            attachmentHexes: List<String>? = null,
+            replyToPostHex: String? = null,
+            text: String? = null,
+            tokenHex: String
     ) = client.request<Unit>(method = HttpMethod.Post) {
         url("$baseUrl/wall")
         contentType(ContentType.Application.Json)
@@ -129,11 +127,11 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param tokenHex - Authorization token hex.
      */
     suspend fun followPost(postHex: String, tokenHex: String) =
-        client.request<Unit> (method = HttpMethod.Post) {
-            url("$baseUrl/wall/likes/$postHex")
-            contentType(ContentType.Application.Json)
-            header("tokenHex", tokenHex)
-        }
+            client.request<Unit>(method = HttpMethod.Post) {
+                url("$baseUrl/wall/likes/$postHex")
+                contentType(ContentType.Application.Json)
+                header("tokenHex", tokenHex)
+            }
 
     /**
      * Unfollow post. If post was already likes, there won't be any error.
@@ -152,12 +150,12 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param tokenHex = Authorization token hex
      */
     suspend fun uploadFile(fileBytes: ByteArray, tokenHex: String) =
-        client.request<Unit>(method = HttpMethod.Post) {
-            url("$baseUrl/files")
-            contentType(ContentType.Application.Json)
-            header("tokenHex", tokenHex)
-            body = fileBytes
-        }
+            client.request<String>(method = HttpMethod.Post) {
+                url("$baseUrl/files")
+                contentType(ContentType.Application.Json)
+                header("tokenHex", tokenHex)
+                body = fileBytes
+            }
 
 
 }
