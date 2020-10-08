@@ -37,4 +37,14 @@ kotlin {
             }
         }
     }
+
+    configure(listOf(targets["metadata"], jvm(), js())) {
+        mavenPublication {
+            val targetPublication = this@mavenPublication
+            tasks.withType<AbstractPublishToMaven>()
+                    .matching { it.publication == targetPublication }
+                    .all { onlyIf { findProperty("isMainHost") == "true" } }
+        }
+    }
+
 }
