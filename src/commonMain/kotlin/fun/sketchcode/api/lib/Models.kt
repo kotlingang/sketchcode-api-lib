@@ -2,22 +2,20 @@ package `fun`.sketchcode.api.lib
 
 import kotlinx.serialization.Serializable
 
-data class AuthorizeResponseModel(
-        val generatedTime: Long,
+@Serializable
+data class TokenModel(
+        val ownerHex: String,
         val hex: String,
-        val ownerHex: String
+        val generatedTime: Long
 )
 
-data class AuthorizeParamsModel(
-        val email: String,
-        val recaptchaToken: String
-)
-
+@Serializable
 data class SendCodeParamsModel(
         val email: String,
         val code: Int
 )
 
+@Serializable
 data class UserModel(
         val avatar: FileModel?,
         val bio: String?,
@@ -33,12 +31,14 @@ data class UserModel(
         val shortname: String?
 )
 
+@Serializable
 data class FilterModel(
         val n: Int,
         val offset: Long?,
         val searchQuery: String?
 )
 
+@Serializable
 data class UserEditParamsModel(
         val avatar: String,
         val bio: String,
@@ -46,6 +46,7 @@ data class UserEditParamsModel(
         val userName: String,
 )
 
+@Serializable
 data class FileModel(
         val accessHex: String,
         val creationTime: Long,
@@ -55,27 +56,9 @@ data class FileModel(
         val size: Long
 )
 
+@Serializable
 data class CreatePostBodyModel(
         val attachmentHexes: List<String>?,
         val replyToPostHex: String?,
         val text: String?
 )
-
-@Serializable
-data class ServerErrorModel(
-        val code: Int,
-        val message: String
-)
-
-data class ResponseScope<T>(
-        val body: T?,
-        val errorBody: ServerErrorModel?
-) {
-    fun success(lambda: (body: T) -> Unit) = apply {
-        if (body != null) lambda(body)
-    }
-
-    fun error(lambda: ServerErrorModel.() -> Unit) = apply {
-        if (errorBody != null) lambda(errorBody)
-    }
-}

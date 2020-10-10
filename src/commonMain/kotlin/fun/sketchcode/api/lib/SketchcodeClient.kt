@@ -1,15 +1,22 @@
 package `fun`.sketchcode.api.lib
 
+import `fun`.sketchcode.api.lib.ktor.ResponseScope
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import `fun`.sketchcode.api.lib.ktor.request
+import io.ktor.client.features.logging.*
 
 class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api") {
 
-    private val client = HttpClient() {
+    private val client = HttpClient {
+//        install(Logging) {
+//            logger = Logger.DEFAULT
+//            level = LogLevel.ALL
+//        }
         install(JsonFeature) {
             serializer = KotlinxSerializer()
         }
@@ -21,11 +28,12 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param email - User email. Max - 350 symbols.
      * @param recaptchaToken - Recaptcha verification token
      */
-    suspend fun getAuthCode(email: String, recaptchaToken: String) =
-            client.request<Unit>(method = HttpMethod.Get) {
+    suspend fun getAuthCode(email: String, recaptchaToken: String, interceptor: ResponseScope<Unit>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Get, interceptor = interceptor) {
                 url("$baseUrl/users/tokens/code")
-                contentType(ContentType.Application.Json)
-                body = AuthorizeParamsModel(email, recaptchaToken)
+
+                parameter("email", email)
+                parameter("recaptchaToken", recaptchaToken)
             }
 
     /**
@@ -34,19 +42,21 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param email - Email to which was sent a code.
      * @return Authorization token
      */
-    suspend fun sendAuthCode(code: Int, email: String) =
-            client.request<AuthorizeParamsModel>(method = HttpMethod.Post) {
+    suspend fun sendAuthCode(email: String, code: Int, interceptor: ResponseScope<TokenModel>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Post, interceptor = interceptor) {
                 url("$baseUrl/users/tokens")
                 contentType(ContentType.Application.Json)
-                body = SendCodeParamsModel(email, code)
+
+                parameter("email", email)
+                parameter("code", code)
             }
 
     /**
      * Get info about token.
      * @param tokenHex - token in hex
      */
-    suspend fun getToken(tokenHex: String) =
-            client.request<AuthorizeResponseModel>(method = HttpMethod.Get) {
+    suspend fun getToken(tokenHex: String, interceptor: ResponseScope<TokenModel>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Get, interceptor = interceptor) {
                 url("$baseUrl/users/tokens")
                 contentType(ContentType.Application.Json)
                 header("tokenHex", tokenHex)
@@ -57,8 +67,8 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param tokenHex - token in hex
      * @param userId - User id
      */
-    suspend fun getUser(tokenHex: String, userId: Long) =
-            client.request<UserModel>(method = HttpMethod.Get) {
+    suspend fun getUser(tokenHex: String, userId: Long, interceptor: ResponseScope<UserModel>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Get, interceptor = interceptor) {
                 url("$baseUrl/users/$userId")
                 contentType(ContentType.Application.Json)
                 header("tokenHex", tokenHex)
@@ -73,8 +83,9 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
     suspend fun getUsers(
             n: Int,
             offset: Long?,
-            searchQuery: String?
-    ) = client.request<List<UserModel>>(method = HttpMethod.Get) {
+            searchQuery: String?,
+            interceptor: ResponseScope<List<UserModel>>.() -> Unit = {}
+    ) = client.request(method = HttpMethod.Get, interceptor = interceptor) {
         url("$baseUrl/users")
         contentType(ContentType.Application.Json)
         body = FilterModel(n, offset, searchQuery)
@@ -94,8 +105,9 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
             bio: String,
             shortname: String,
             userName: String,
-            tokenHex: String
-    ) = client.request<Unit>(method = HttpMethod.Patch) {
+            tokenHex: String,
+            interceptor: ResponseScope<Unit>.() -> Unit = {}
+    ) = client.request<Unit>(method = HttpMethod.Patch, interceptor = interceptor) {
         url("$baseUrl/users")
         contentType(ContentType.Application.Json)
         header("tokenHex", tokenHex)
@@ -113,8 +125,9 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
             attachmentHexes: List<String>? = null,
             replyToPostHex: String? = null,
             text: String? = null,
-            tokenHex: String
-    ) = client.request<Unit>(method = HttpMethod.Post) {
+            tokenHex: String,
+            interceptor: ResponseScope<Unit>.() -> Unit = {}
+    ) = client.request(method = HttpMethod.Post, interceptor = interceptor) {
         url("$baseUrl/wall")
         contentType(ContentType.Application.Json)
         header("tokenHex", tokenHex)
@@ -122,24 +135,24 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
     }
 
     /**
-     * Follow post. If post was already likes, there won't be any error.
+     * Like post. If post was already likes, there won't be any error.
      * @param postHex - Post unique hex
      * @param tokenHex - Authorization token hex.
      */
-    suspend fun followPost(postHex: String, tokenHex: String) =
-            client.request<Unit>(method = HttpMethod.Post) {
+    suspend fun likePost(postHex: String, tokenHex: String, interceptor: ResponseScope<Unit>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Post, interceptor = interceptor) {
                 url("$baseUrl/wall/likes/$postHex")
                 contentType(ContentType.Application.Json)
                 header("tokenHex", tokenHex)
             }
 
     /**
-     * Unfollow post. If post was already likes, there won't be any error.
+     * Unlike post. If post was already likes, there won't be any error.
      * @param postHex - Post unique hex
      * @param tokenHex - Authorization token hex.
      */
-    suspend fun unfollowPost(postHex: String, tokenHex: String) =
-            client.request<Unit>(method = HttpMethod.Delete) {
+    suspend fun unlikePost(postHex: String, tokenHex: String, interceptor: ResponseScope<Unit>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Delete, interceptor = interceptor) {
                 url("$baseUrl/wall/likes/$postHex")
                 contentType(ContentType.Application.Json)
                 header("tokenHex", tokenHex)
@@ -149,8 +162,8 @@ class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api
      * @param fileBytes - File content bytes
      * @param tokenHex = Authorization token hex
      */
-    suspend fun uploadFile(fileBytes: ByteArray, tokenHex: String) =
-            client.request<String>(method = HttpMethod.Post) {
+    suspend fun uploadFile(fileBytes: ByteArray, tokenHex: String, interceptor: ResponseScope<String>.() -> Unit = {}) =
+            client.request(method = HttpMethod.Post, interceptor = interceptor) {
                 url("$baseUrl/files")
                 contentType(ContentType.Application.Json)
                 header("tokenHex", tokenHex)
