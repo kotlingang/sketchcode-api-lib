@@ -1,16 +1,16 @@
 package `fun`.sketchcode.api.lib
 
 import `fun`.sketchcode.api.lib.ktor.ResponseScope
+import `fun`.sketchcode.api.lib.ktor.request
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import `fun`.sketchcode.api.lib.ktor.request
-import io.ktor.client.features.logging.*
 
-class SketchcodeClient(private val baseUrl: String = "https://sketchcode.fun/api") {
+
+class SketchcodeClient(private val baseUrl: String = "https://api.sketchcode.fun/") {
 
     private val client = HttpClient {
 //        install(Logging) {
