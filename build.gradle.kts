@@ -18,6 +18,7 @@ repositories {
 kotlin {
 
     jvm()
+    android()
 
     sourceSets {
         val commonMain by getting {
@@ -38,7 +39,7 @@ kotlin {
             }
         }
 
-        configure(listOf(targets["metadata"], jvm())) {
+        configure(listOf(targets["metadata"], jvm(), android())) {
             mavenPublication {
                 val targetPublication = this@mavenPublication
                 tasks.withType<AbstractPublishToMaven>()
