@@ -38,6 +38,7 @@ kotlin {
                 implementation(slf4jLogger)
             }
         }
+        val androidMain by getting
 
         configure(listOf(targets["metadata"], jvm(), android())) {
             mavenPublication {

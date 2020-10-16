@@ -5,9 +5,9 @@
       <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" isTestModule="true" externalProjectId="sketchcode-api-lib">
         <dependsOnModuleNames>sketchcode-api-lib:commonTest</dependsOnModuleNames>
         <sourceSets>
+          <sourceSet>sketchcode-api-lib.commonMain</sourceSet>
           <sourceSet>sketchcode-api-lib.jvmMain</sourceSet>
           <sourceSet>sketchcode-api-lib.commonTest</sourceSet>
-          <sourceSet>sketchcode-api-lib.commonMain</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
