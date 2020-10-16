@@ -11,6 +11,7 @@ group = "fun.sketchcode.api.lib"
 version = "1.0"
 
 repositories {
+    google()
     mavenCentral()
     jcenter()
 }
@@ -18,7 +19,6 @@ repositories {
 kotlin {
 
     jvm()
-    android()
 
     sourceSets {
         val commonMain by getting {
@@ -38,9 +38,8 @@ kotlin {
                 implementation(slf4jLogger)
             }
         }
-        val androidMain by getting
 
-        configure(listOf(targets["metadata"], jvm(), android())) {
+        configure(listOf(targets["metadata"], jvm())) {
             mavenPublication {
                 val targetPublication = this@mavenPublication
                 tasks.withType<AbstractPublishToMaven>()
