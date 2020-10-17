@@ -11,7 +11,8 @@ data class ServerErrorModel(
 
 data class ResponseScope<T>(
     val body: T?,
-    val errorBody: ServerErrorModel?
+    val errorBody: ServerErrorModel?,
+    val throwable: Throwable?
 ) {
     inline fun success(lambda: (body: T) -> Unit) = apply {
         if (body != null) lambda(body)
@@ -19,5 +20,9 @@ data class ResponseScope<T>(
 
     inline fun error(lambda: ServerErrorModel.() -> Unit) = apply {
         if (errorBody != null) lambda(errorBody)
+    }
+
+    inline fun failure(lambda: (Throwable) -> Unit) = apply {
+        if (throwable != null) lambda(throwable)
     }
 }

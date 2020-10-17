@@ -42,10 +42,17 @@ suspend inline fun <reified T> HttpClient.requestPrivate(
         accept(ContentType.Any)
 
         apply(block)
-    }, errorBody = null)
+    }, errorBody = null, throwable = null)
 } catch (re: ResponseException) {
     ResponseScope(
         body = null,
+        throwable = null,
         errorBody = Json.decodeFromString(re.response.readText(Charset.forName("UTF-8")))
+    )
+} catch (t: Throwable) {
+    ResponseScope(
+        body = null,
+        errorBody = null,
+        throwable = t
     )
 }
