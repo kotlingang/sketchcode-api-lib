@@ -9,8 +9,10 @@ import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.CoroutineContext
 
 
 suspend inline fun <reified T> HttpClient.request(
@@ -18,7 +20,18 @@ suspend inline fun <reified T> HttpClient.request(
     path: String = "/",
     body: Any = EmptyContent,
     method: HttpMethod,
+    coroutineContext: CoroutineContext,
     interceptor: ResponseScope<T>.() -> Unit = {},
+    crossinline block: HttpRequestBuilder.() -> Unit = {},
+): ResponseScope<T> = withContext(coroutineContext) {
+    requestPrivate<T>(scheme, host, port, path, body, method, block)
+}.apply(interceptor)
+
+suspend inline fun <reified T> HttpClient.requestPrivate(
+    scheme: String, host: String, port: Int,
+    path: String,
+    body: Any = EmptyContent,
+    method: HttpMethod,
     block: HttpRequestBuilder.() -> Unit = {}
 ): ResponseScope<T> = try {
     ResponseScope(body = request<T> {
@@ -31,8 +44,8 @@ suspend inline fun <reified T> HttpClient.request(
         apply(block)
     }, errorBody = null)
 } catch (re: ResponseException) {
-    ResponseScope<T>(
+    ResponseScope(
         body = null,
         errorBody = Json.decodeFromString(re.response.readText(Charset.forName("UTF-8")))
     )
-}.apply(interceptor)
+}

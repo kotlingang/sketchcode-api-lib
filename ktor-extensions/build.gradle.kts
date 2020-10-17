@@ -4,6 +4,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    `maven-publish`
 }
 
 group = "fun.sketchcode.api.lib"

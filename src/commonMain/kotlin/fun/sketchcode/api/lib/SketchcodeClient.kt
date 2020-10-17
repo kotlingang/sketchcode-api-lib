@@ -6,17 +6,27 @@ import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
+import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 
-class SketchcodeClient(private val baseUrl: String = "https://api.sketchcode.fun/") {
+class SketchcodeClient(
+    private val context: CoroutineContext = Dispatchers.Default,
+    private val logging: Boolean = false,
+    private val baseUrl: String = "https://api.sketchcode.fun/"
+) {
 
     private val client = HttpClient {
-//        install(Logging) {
-//            logger = Logger.DEFAULT
-//            level = LogLevel.ALL
-//        }
+        if(logging) {
+            install(Logging) {
+                logger = Logger.DEFAULT
+                level = LogLevel.ALL
+            }
+        }
         install(JsonFeature) {
             serializer = KotlinxSerializer()
         }
@@ -107,7 +117,7 @@ class SketchcodeClient(private val baseUrl: String = "https://api.sketchcode.fun
             userName: String,
             tokenHex: String,
             interceptor: ResponseScope<Unit>.() -> Unit = {}
-    ) = client.request<Unit>(method = HttpMethod.Patch, interceptor = interceptor) {
+    ) = client.request(method = HttpMethod.Patch, interceptor = interceptor) {
         url("$baseUrl/users")
         contentType(ContentType.Application.Json)
         header("tokenHex", tokenHex)
@@ -170,5 +180,12 @@ class SketchcodeClient(private val baseUrl: String = "https://api.sketchcode.fun
                 body = fileBytes
             }
 
-
+    private suspend inline fun <reified T> HttpClient.request(
+        scheme: String = "http", host: String = "localhost", port: Int = DEFAULT_PORT,
+        path: String = "/",
+        body: Any = EmptyContent,
+        method: HttpMethod,
+        interceptor: ResponseScope<T>.() -> Unit = {},
+        crossinline block: HttpRequestBuilder.() -> Unit = {},
+    ) = request(scheme, host, port, path, body, method, context, interceptor, block)
 }
