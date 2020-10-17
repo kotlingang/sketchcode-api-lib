@@ -11,13 +11,19 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
 import kotlin.coroutines.CoroutineContext
 
 
+/**
+ * @param apiVersion should be specified for compatibility
+ */
 class SketchcodeClient(
+    private val apiVersion: Int,
     private val context: CoroutineContext = Dispatchers.Default,
     private val logging: Boolean = false,
-    private val baseUrl: String = "https://api.sketchcode.fun/"
+    private val baseUrl: String = "https://api.sketchcode.fun/",
 ) {
 
     private val client = HttpClient {
@@ -181,11 +187,14 @@ class SketchcodeClient(
             }
 
     private suspend inline fun <reified T> HttpClient.request(
-        scheme: String = "http", host: String = "localhost", port: Int = DEFAULT_PORT,
-        path: String = "/",
-        body: Any = EmptyContent,
-        method: HttpMethod,
-        interceptor: ResponseScope<T>.() -> Unit = {},
-        crossinline block: HttpRequestBuilder.() -> Unit = {},
-    ) = request(scheme, host, port, path, body, method, context, interceptor, block)
+            scheme: String = "http", host: String = "localhost", port: Int = DEFAULT_PORT,
+            path: String = "/",
+            body: Any = EmptyContent,
+            method: HttpMethod,
+            interceptor: ResponseScope<T>.() -> Unit = {},
+            crossinline block: HttpRequestBuilder.() -> Unit = {},
+    ) = request(scheme, host, port, path, body, method, context, interceptor) {
+        header("Api-Version", apiVersion)
+        block()
+    }
 }

@@ -5,9 +5,9 @@
       <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" isTestModule="true" externalProjectId=":ktor-extensions">
         <dependsOnModuleNames>:ktor-extensions:commonTest</dependsOnModuleNames>
         <sourceSets>
-          <sourceSet>sketchcode-api-lib.ktor-extensions.jvmMain</sourceSet>
           <sourceSet>sketchcode-api-lib.ktor-extensions.commonTest</sourceSet>
           <sourceSet>sketchcode-api-lib.ktor-extensions.commonMain</sourceSet>
+          <sourceSet>sketchcode-api-lib.ktor-extensions.jvmMain</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
@@ -25,7 +25,7 @@
           <option name="friendPaths">
             <array>
               <option value="$MODULE_DIR$/../../../ktor-extensions/build/classes/kotlin/jvm/main" />
-              <option value="$MODULE_DIR$/../../../ktor-extensions/build/libs/ktor-extensions-jvm-1.0.jar" />
+              <option value="$MODULE_DIR$/../../../ktor-extensions/build/libs/ktor-extensions-jvm-1.1.jar" />
             </array>
           </option>
           <option name="languageVersion" value="1.4" />
