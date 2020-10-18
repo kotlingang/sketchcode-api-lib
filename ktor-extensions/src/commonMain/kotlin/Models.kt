@@ -1,12 +1,20 @@
 package `fun`.sketchcode.api.lib.ktor
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.json.JsonElement
 
 
 @Serializable
 data class ServerErrorModel(
     val code: Int,
-    val text: String
+    val text: String,
+    val data: JsonElement
 )
 
 data class ResponseScope<T>(

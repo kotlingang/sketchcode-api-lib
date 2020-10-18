@@ -10,6 +10,7 @@ import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
@@ -47,7 +48,7 @@ suspend inline fun <reified T> HttpClient.requestPrivate(
     ResponseScope(
         body = null,
         throwable = null,
-        errorBody = Json.decodeFromString(re.response.readText(Charset.forName("UTF-8")))
+        errorBody = json.decodeFromString<ServerErrorModel>(re.response.readText(Charset.forName("UTF-8")))
     )
 } catch (t: Throwable) {
     ResponseScope(

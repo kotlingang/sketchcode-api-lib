@@ -4,7 +4,7 @@ import `fun`.sketchcode.api.lib.SketchcodeClient
 
 
 const val email = "sokolsokolinskiy@gmail.com"
-val client = SketchcodeClient()
+val client = SketchcodeClient(logging = true)
 
 suspend fun main() {
     client.getAuthCode(email, "token")

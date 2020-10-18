@@ -1,6 +1,7 @@
 package `fun`.sketchcode.api.lib
 
 import `fun`.sketchcode.api.lib.ktor.ResponseScope
+import `fun`.sketchcode.api.lib.ktor.json
 import `fun`.sketchcode.api.lib.ktor.request
 import io.ktor.client.*
 import io.ktor.client.features.*
@@ -11,20 +12,15 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flow
 import kotlin.coroutines.CoroutineContext
 
 
-/**
- * @param apiVersion should be specified for compatibility
- */
 class SketchcodeClient(
-    private val apiVersion: Int,
     private val context: CoroutineContext = Dispatchers.Default,
     private val logging: Boolean = false,
     private val baseUrl: String = "https://api.sketchcode.fun/",
 ) {
+    private val apiVersion = 1
 
     private val client = HttpClient {
         if(logging) {
@@ -34,7 +30,7 @@ class SketchcodeClient(
             }
         }
         install(JsonFeature) {
-            serializer = KotlinxSerializer()
+            serializer = KotlinxSerializer(json)
         }
         addDefaultResponseValidation()
     }
@@ -73,22 +69,23 @@ class SketchcodeClient(
      */
     suspend fun getToken(tokenHex: String, interceptor: ResponseScope<TokenModel>.() -> Unit = {}) =
             client.request(method = HttpMethod.Get, interceptor = interceptor) {
-                url("$baseUrl/users/tokens")
+            url("$baseUrl/users/tokens")
                 contentType(ContentType.Application.Json)
                 header("tokenHex", tokenHex)
             }
 
     /**
-     * Get user by [userId].
+     * Get user by [userHex].
      * @param tokenHex - token in hex
-     * @param userId - User id
+     * @param userHex - User hex
      */
-    suspend fun getUser(tokenHex: String, userId: Long, interceptor: ResponseScope<UserModel>.() -> Unit = {}) =
-            client.request(method = HttpMethod.Get, interceptor = interceptor) {
-                url("$baseUrl/users/$userId")
-                contentType(ContentType.Application.Json)
-                header("tokenHex", tokenHex)
-            }
+    suspend fun getUser(
+            tokenHex: String? = null, userHex: String? = null, interceptor: ResponseScope<UserModel>.() -> Unit = {}
+    ) = client.request(method = HttpMethod.Get, interceptor = interceptor) {
+        url("$baseUrl/users/${userHex ?: ""}")
+        contentType(ContentType.Application.Json)
+        header("tokenHex", tokenHex)
+    }
 
     /**
      * Get list of users.
@@ -117,11 +114,11 @@ class SketchcodeClient(
      * @param tokenHex - user authorization hex
      */
     suspend fun editUser(
-            avatar: String,
-            bio: String,
-            shortname: String,
-            userName: String,
-            tokenHex: String,
+            avatar: String? = null,
+            bio: String? = null,
+            shortname: String? = null,
+            userName: String? = null,
+            tokenHex: String? = null,
             interceptor: ResponseScope<Unit>.() -> Unit = {}
     ) = client.request(method = HttpMethod.Patch, interceptor = interceptor) {
         url("$baseUrl/users")

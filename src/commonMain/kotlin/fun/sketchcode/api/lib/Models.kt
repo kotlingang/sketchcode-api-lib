@@ -40,10 +40,10 @@ data class FilterModel(
 
 @Serializable
 data class UserEditParamsModel(
-        val avatar: String,
-        val bio: String,
-        val shortname: String,
-        val userName: String,
+        val avatar: String?,
+        val bio: String?,
+        val shortname: String?,
+        val userName: String?,
 )
 
 @Serializable
