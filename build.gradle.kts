@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "fun.sketchcode.api.lib"
-version = "1.1.9"
+version = "1.2.0"
 
 repositories {
     google()
