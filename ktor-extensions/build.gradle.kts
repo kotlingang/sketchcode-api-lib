@@ -8,13 +8,14 @@ plugins {
 }
 
 group = "fun.sketchcode.api.lib"
-version = "1.1.1"
+version = "1.1.2"
 
 repositories {
     mavenCentral()
 }
 
 kotlin {
+    js()
     jvm()
 
     sourceSets {

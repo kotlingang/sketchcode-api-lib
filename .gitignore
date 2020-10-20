@@ -5,3 +5,4 @@
 /ktor-extensions/build/
 /local.properties
 /gradle.properties
+/src/jvmTest/

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "fun.sketchcode.api.lib"
-version = "1.1.8"
+version = "1.1.9"
 
 repositories {
     google()
@@ -19,6 +19,7 @@ repositories {
 kotlin {
 
     jvm()
+    js()
 
     sourceSets {
         val commonMain by getting {
@@ -36,15 +37,6 @@ kotlin {
             dependencies {
                 implementation(ktorEngineJvm)
                 implementation(slf4jLogger)
-            }
-        }
-
-        configure(listOf(targets["metadata"], jvm())) {
-            mavenPublication {
-                val targetPublication = this@mavenPublication
-                tasks.withType<AbstractPublishToMaven>()
-                        .matching { it.publication == targetPublication }
-                        .all { onlyIf { findProperty("isMainHost") == "true" } }
             }
         }
     }

@@ -5,8 +5,8 @@
       <configuration version="3" platform="JVM 1.8" allPlatforms="JVM [1.8]" useProjectSettings="false" isTestModule="true" externalProjectId="sketchcode-api-lib">
         <dependsOnModuleNames>sketchcode-api-lib:commonTest</dependsOnModuleNames>
         <sourceSets>
-          <sourceSet>sketchcode-api-lib.commonMain</sourceSet>
           <sourceSet>sketchcode-api-lib.jvmMain</sourceSet>
+          <sourceSet>sketchcode-api-lib.commonMain</sourceSet>
           <sourceSet>sketchcode-api-lib.commonTest</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
@@ -26,7 +26,7 @@
           <option name="friendPaths">
             <array>
               <option value="$MODULE_DIR$/../../build/classes/kotlin/jvm/main" />
-              <option value="$MODULE_DIR$/../../build/libs/sketchcode-api-lib-jvm-1.1.8.jar" />
+              <option value="$MODULE_DIR$/../../build/libs/sketchcode-api-lib-jvm-1.1.9.jar" />
             </array>
           </option>
           <option name="languageVersion" value="1.4" />

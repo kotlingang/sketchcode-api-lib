@@ -19,9 +19,6 @@ data class SendCodeParamsModel(
 data class UserModel(
         val avatar: FileModel?,
         val bio: String?,
-        /**
-         * Null if authorized user not equal to getting user
-         */
         val email: String? = null,
         val hex: String,
         val name: String,
@@ -29,6 +26,19 @@ data class UserModel(
          * User shortname (ex: @shortname, sketchcode.fun/users/[shortname])
          */
         val shortname: String?
+)
+
+@Serializable
+data class PostModel(
+        val hex: String,
+        val ownerHex: String,
+        val text: String?,
+        val likes: Long,
+        val isLiked: Boolean,
+        val views: Long,
+        val comments: Long,
+        val attachments: List<FileModel>,
+        val time: Long
 )
 
 @Serializable
