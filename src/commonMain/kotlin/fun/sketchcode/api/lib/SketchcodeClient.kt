@@ -17,7 +17,6 @@ import kotlin.coroutines.CoroutineContext
 
 
 class SketchcodeClient(
-    private val context: CoroutineContext = Dispatchers.Default,
     private val logging: Boolean = false,
     private val baseUrl: String = "https://api.sketchcode.fun",
 ) {
@@ -32,6 +31,10 @@ class SketchcodeClient(
         }
         install(JsonFeature) {
             serializer = KotlinxSerializer(json)
+        }
+        install(DefaultRequest) {
+            header("Api-Version", apiVersion)
+            contentType(ContentType.Application.Json)
         }
         addDefaultResponseValidation()
     }
@@ -195,18 +198,4 @@ class SketchcodeClient(
                 header("tokenHex", tokenHex)
                 body = fileBytes
             }
-
-    private suspend inline fun <reified T> HttpClient.request(
-            scheme: String = "http", host: String = "localhost", port: Int = DEFAULT_PORT,
-            path: String = "/",
-            body: Any = EmptyContent,
-            method: HttpMethod,
-            interceptor: ResponseScope<T>.() -> Unit = {},
-            crossinline block: HttpRequestBuilder.() -> Unit = {},
-    ) = request(scheme, host, port, path, body, method, context, interceptor) {
-        header("Api-Version", apiVersion)
-        contentType(ContentType.Application.Json)
-
-        block()
-    }
 }
