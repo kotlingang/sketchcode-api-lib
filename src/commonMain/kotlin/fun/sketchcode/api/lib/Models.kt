@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class TokenModel(
         val ownerHex: String,
         val hex: String,
-        val generatedTime: Long
+        val generatedTime: Long,
+        val firstAuth: Boolean
 )
 
 @Serializable
