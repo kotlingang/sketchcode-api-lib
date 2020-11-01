@@ -7,7 +7,7 @@ data class TokenModel(
         val ownerHex: String,
         val hex: String,
         val generatedTime: Long,
-        val firstAuth: Boolean
+        val firstAuth: Boolean = false
 )
 
 @Serializable

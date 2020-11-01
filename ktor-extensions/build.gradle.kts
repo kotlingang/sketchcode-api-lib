@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "fun.sketchcode.api.lib"
-version = "1.2.2"
+version = "1.2.5"
 
 repositories {
     mavenCentral()
